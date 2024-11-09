@@ -94,7 +94,7 @@ default_session = initial_session;
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.topsykrets = {
     isNormalUser = true;
-    description = "Chad Stazan";
+    description = "";
     extraGroups = [ "networkmanager" "wheel" ];
     packages = with pkgs; [
     ];
