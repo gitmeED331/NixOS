@@ -1,30 +1,30 @@
 # Edit this configuration file to define what should be installed on
 # your system.  Help is available in the configuration.nix(5) man page
 # and in the NixOS manual (accessible by running ‘nixos-help’).
-
-{ config, lib, pkgs, ... }:
-
 {
-  imports =
-    [ # Include the results of the hardware scan.
-      ./hardware-configuration.nix
-	<home-manager/nixos>
-    ];
+  config,
+  lib,
+  pkgs,
+  ...
+}: {
+  imports = [
+    # Include the results of the hardware scan.
+    ./hardware-configuration.nix
+  ];
 
   # Bootloader.
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-	# gnome keyring
-	services.gnome.gnome-keyring.enable = true;
-	security.polkit.enable = true;
+  # gnome keyring
+  services.gnome.gnome-keyring.enable = true;
+  security.polkit.enable = true;
 
-	security.pam.services.hyprlock = { };
-	security.pam.services.hyprlock.fprintAuth = false;
+  security.pam.services.hyprlock = {};
+  security.pam.services.hyprlock.fprintAuth = false;
 
-
-#  networking.hostName = "Dragon"; # Define your hostname.
-#  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
+  #  networking.hostName = "Dragon"; # Define your hostname.
+  #  networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
 
   # Configure network proxy if necessary
   # networking.proxy.default = "http://user:password@proxy:port/";
@@ -51,17 +51,17 @@
     LC_TIME = "en_US.UTF-8";
   };
 
- services.greetd = {
+  services.greetd = {
     enable = true;
     settings = rec {
       initial_session = {
-        command = "hyprland";
-	user = "topsykrets";
+        command = "Hyprland";
+        user = "topsykrets";
       };
-default_session = initial_session;
+      default_session = initial_session;
     };
   };
- 
+
   environment.etc."greetd/environments".text = ''
     deepin
     bash
@@ -95,88 +95,71 @@ default_session = initial_session;
   users.users.topsykrets = {
     isNormalUser = true;
     description = "";
-    extraGroups = [ "networkmanager" "wheel" ];
+    extraGroups = ["networkmanager" "wheel"];
     packages = with pkgs; [
     ];
   };
 
-# home-manager.users.topsykrets = { pkgs, ... }: {
-  # home.packages = [ pkgs.atool pkgs.httpie ];
-  # programs.bash.enable = true;
-
-#	imports = [
-#	  /home/topsykrets/.config/NixOS/home.nix
-#	];
-
-  # The state version is required and should stay at the version you
-  # originally installed.
- # home.stateVersion = "24.05";
-# };
-
-  # install apps 
+  # install apps
   # programs.firefox.enable = true;
 
-
-programs.hyprland = {
+#  programs.hyprland = {
     # Install the packages from nixpkgs
-    enable = true;
+ #   enable = true;
     # Whether to enable XWayland
-    xwayland.enable = true;
+  #  xwayland.enable = true;
     #hyprlock.enable = true;
     #portalPackage.enable = true;
-    
-  };
-# services.hypridle.enable = true;
-# programs.iio-hyprland.enable = true;
-# environmentals
-#  environment.sessionVariables.NIXOS_OZONE_WL = "1";
+  #};
+  # services.hypridle.enable = true;
+  # programs.iio-hyprland.enable = true;
+  # environmentals
+  #  environment.sessionVariables.NIXOS_OZONE_WL = "1";
 
-
-programs.river.enable = true;
-#programs.river.extraPackages.enable = true;
+  programs.river.enable = true;
+  #programs.river.extraPackages.enable = true;
 
   # Allow unfree packages
   nixpkgs.config.allowUnfree = true;
 
-  nix.settings.experimental-features = [ "nix-command" "flakes" ];
+  nix.settings.experimental-features = ["nix-command" "flakes"];
   # List packages installed in system profile. To search, run:
   # $ nix search wget
   environment.systemPackages = with pkgs; [
-	git
-	wget
-	curl
-	hplipwithplugin
-#	vivaldi
-#	vivaldi-ffmpeg-codecs
-#	vscode
-#	terminator
-#	vesktop
-#	udiskie
-#	signal-desktop
-#	cryptomator
-#	threema-desktop
-#	zoom-us
-#	libreoffice-fresh
-#	pcloud
-#	`protonvpn-gui
-#	greetd.regreet
-#	greetd.greetd	
-#	xdg-desktop-portal-hyprland
-#	hyprlock
-#	light
-#	xdg-utils
-#	gnome.seahorse
-#	rofi
-#	wl-clipboard
-#	hyprpicker
-#	swww
-#	slurp
-#	grim
-#	grimblast
-#	wf-recorder
-#	polkit_gnome
-#	gnome.nautilus
-#	cliphist
+    git
+    wget
+    curl
+    #	vivaldi
+    #	vivaldi-ffmpeg-codecs
+    #	vscode
+    #	terminator
+    #	vesktop
+    #	udiskie
+    #	signal-desktop
+    #	cryptomator
+    #	threema-desktop
+    #	zoom-us
+    #	libreoffice-fresh
+    #	pcloud
+    #	`protonvpn-gui
+    #	greetd.regreet
+    #	greetd.greetd
+    #	xdg-desktop-portal-hyprland
+    #	hyprlock
+    #	light
+    #	xdg-utils
+    #	gnome.seahorse
+    #	rofi
+    #	wl-clipboard
+    #	hyprpicker
+    #	swww
+    #	slurp
+    #	grim
+    #	grimblast
+    #	wf-recorder
+    #	polkit_gnome
+    #	gnome.nautilus
+    #	cliphist
   ];
 
   # Some programs need SUID wrappers, can be configured further or are
@@ -207,5 +190,4 @@ programs.river.enable = true;
   system.stateVersion = "24.05"; # Did you read the comment?
   system.autoUpgrade.enable = true;
   system.autoUpgrade.allowReboot = true;
-
 }

@@ -1,14 +1,15 @@
-{ config, pkgs, settings, inputs, ... }:
-
 {
+  config,
+  pkgs,
+  inputs,
+  ...
+}: {
+  imports = [
+    inputs.ags.homeManagerModules.default
+  ];
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
-  home.username = "${settings.username}";
-  home.homeDirectory = "/home/topsykrets";
-
-  networking.hostName = "Dragon";
-  
-   wayland.windowManager.hyprland = {
+  wayland.windowManager.hyprland = {
     enable = true;
     package = pkgs.hyprland;
     xwayland.enable = true;
@@ -17,22 +18,22 @@
   };
 
   home.sessionVariables.NIXOS_OZONE_WL = "1";
-  
+
   xresources.properties = {
     "Xcursor.size" = 16;
     #"Xft.dpi" = 172;
   };
 
- xdg.portal = {
+  xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
       xdg-desktop-portal-hyprland
       xdg-desktop-portal-wlr
       xdg-desktop-portal-gtk
     ];
-};
+  };
 
-home.pointerCursor = {
+  home.pointerCursor = {
     gtk.enable = true;
     # x11.enable = true;
     package = pkgs.bibata-cursors;
@@ -69,14 +70,14 @@ home.pointerCursor = {
   # changes in each release.
   home.stateVersion = "24.05";
 
-  # Let Home Manager install and manage itself.
-  programs.home-manager.enable = true;
+  home.packages = with pkgs; [
+    # theming
+    adwaita-icon-theme
 
- home.packages = with pkgs; [
     # apps
     enpass
-	  keepassxc
-    
+    keepassxc
+
     # archive
     zip
     xz
@@ -85,107 +86,91 @@ home.pointerCursor = {
 
     # web browser
     vivaldi
-	  vivaldi-ffmpeg-codecs
+    vivaldi-ffmpeg-codecs
 
     # coding
-	  vscode
+    vscode
     lsd
     gawk
     terminator
-	  
+
     # comms
     vesktop
-	  signal-desktop
+    signal-desktop
     threema-desktop
     zoom-us
-    
+
     # utils
     git
     wget
     htop
-    udiskie
+    #udiskie
     xdg-desktop-portal-hyprland
-	  light
-	  xdg-utils  
+    light
+    xdg-utils
     rofi
-  	wl-clipboard
-	  hyprpicker
-	  swww
-	  slurp
-	  grim
-	  grimblast
-	  wf-recorder
+    wl-clipboard
+    hyprpicker
+    swww
+    slurp
+    grim
+    grimblast
+    wf-recorder
     cliphist
-    
+
     # drivers
     hplipWithPlugin
     openrazer-daemon
 
     # office
-		libreoffice-fresh
-	  cryptomator
-	  pcloud
-	  gnome.nautilus
+    libreoffice-fresh
+    cryptomator
+    pcloud
+    nautilus
+    lxqt.pcmanfm
 
     # security
     hyprlock
     protonvpn-gui
-	  greetd.regreet
-	  greetd.greetd	
-		gnome.seahorse
-		polkit_gnome
-
-    # AGS
-	  # inputs.ags.packages.${pkgs.system}.io 
-    # inputs.ags.packages.${pkgs.system}.notifd 
-    # inputs.ags.packages.${pkgs.system}.wireplumber
-    # inputs.ags.packages.${pkgs.system}.hyprland
-    # inputs.ags.packages.${pkgs.system}.river
-    # inputs.ags.packages.${pkgs.system}.apps
-    # inputs.ags.packages.${pkgs.system}.battery
-    # inputs.ags.packages.${pkgs.system}.bluetoot
-    # inputs.ags.packages.${pkgs.system}.network
-    # inputs.ags.packages.${pkgs.system}.mpris
-    # inputs.ags.packages.${pkgs.system}.tray
-    # inputs.ags.packages.${pkgs.system}.cava
-    # inputs.ags.packages.${pkgs.system}.auth
-    # inputs.ags.packages.${pkgs.system}.greet 
+    greetd.regreet
+    greetd.greetd
+    seahorse
+    polkit_gnome
   ];
 
-programs.git = {
+  programs.git = {
     enable = true;
     userName = "topsykrets";
     userEmail = "topsykrets@proton.me";
   };
 
   # add the home manager module
-  imports = [ inputs.ags.homeManagerModules.default ];
-
-programs.ags = {
+  programs.ags = {
     enable = true;
-    configDir = ../ags;
+    # configDir = ../ags;
 
     # additional packages to add to gjs's runtime
-    extraPackages = with pkgs; [
-      inputs.ags.packages.${pkgs.system}.battery
-      # inputs.ags.packages.${pkgs.system}.io
-      inputs.ags.packages.${pkgs.system}.notifd
-      inputs.ags.packages.${pkgs.system}.wireplumber
-      inputs.ags.packages.${pkgs.system}.hyprland
-      inputs.ags.packages.${pkgs.system}.river
-      inputs.ags.packages.${pkgs.system}.apps
-      inputs.ags.packages.${pkgs.system}.bluetooth
-      inputs.ags.packages.${pkgs.system}.network
-      inputs.ags.packages.${pkgs.system}.mpris
-      inputs.ags.packages.${pkgs.system}.tray
-      inputs.ags.packages.${pkgs.system}.cava
-      inputs.ags.packages.${pkgs.system}.auth
-      inputs.ags.packages.${pkgs.system}.greet
-      fzf
-    ];
+    extraPackages = with inputs.ags.packages.${pkgs.system}; 
+      [
+          battery
+          io
+          notifd
+          wireplumber
+          hyprland
+          river
+          apps
+          bluetooth
+          network
+          mpris
+          tray
+          cava
+          auth
+          greet
+          pkgs.fzf
+      ];
   };
 
-services.gpg-agent = {
+  services.gpg-agent = {
     enable = true;
     defaultCacheTtl = 1800;
     enableSshSupport = true;
