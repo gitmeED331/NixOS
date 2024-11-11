@@ -30,9 +30,9 @@
       auth
       greet
       pkgs.fzf
-      pkgs.accountsservice
     ];
   };
+
   home.packages = with pkgs; [
     bun
     dart-sass
