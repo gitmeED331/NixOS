@@ -35,14 +35,15 @@ in
     gnome = {
       gnome-keyring.enable = true;
     };
-
+    hypridle.enable = true;
+  };
   security = {
     polkit.enable = true;
     rtkit.enable = true;
     pam.services.hyprlock = {};
     pam.services.hyprlock.fprintAuth = false;
   };
-  };
+  
 
   environment.etc."greetd/environments".text = ''
     deepin

@@ -37,14 +37,18 @@
       Dragon = nixpkgs.lib.nixosSystem {
         specialArgs = {inherit inputs;};
         modules = [
+          ./nixos.nix
           auto-cpufreq.nixosModules.default
           home-manager.nixosModules.home-manager
           {
-            home-manager.backupFileExtension = "backup";
-            home-manager.useGlobalPkgs = true;
-            home-manager.useUserPackages = true;
-            home-manager.users.topsykrets = import ./home.nix;
-            home-manager.extraSpecialArgs = {inherit inputs;};
+            home-manager = {
+              backupFileExtension = "backup";
+              useGlobalPkgs = true;
+              useUserPackages = true;
+              #users.topsykrets = import ./home.nix;
+              extraSpecialArgs = {inherit inputs;};
+            };
+            networking.hostName = "Dragon";
           }
         ];
       };

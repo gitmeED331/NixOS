@@ -11,11 +11,14 @@ in {
     ./audio.nix
     ./locality.nix
     ./nautilus.nix
-    ./laptop.nix
-    ./hyprland.nix
-    ./packages.nix
-    ./apps.nix
+    ./login.nix
   ];
+  
+  programs = {
+    hyprland.enable = true;
+    river.enable = true;
+    hyprlock.enable = true;
+  };
 
 # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {
@@ -30,8 +33,7 @@ in {
       "scanner"
       "lp"
     ];
-    packages = with pkgs; [
-    ];
+
   };
 
   home-manager = {
@@ -50,7 +52,6 @@ in {
         ./Home-Manager/hyprland.nix
         ./Home-Manager/river.nix
         ./Home-Manager/packages.nix
-        ./Home-Manager/sh.nix
         ./Home-Manager/starship.nix
         ./Home-Manager/theme.nix
         ./home.nix

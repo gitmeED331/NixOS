@@ -5,7 +5,6 @@
   ...
 }: {
 
-  documentation.nixos.enable = false; # .desktop
   nixpkgs.config.allowUnfree = true;
   nix.settings = {
     experimental-features = "nix-command flakes";

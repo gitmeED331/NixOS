@@ -85,11 +85,11 @@
         
         TERM = "terminator";
 
-        QT_QPA_PLATFORM = wayland;
-        CLUTTER_BACKEND = wayland;
-        GDK_BACKEND = wayland;
-        OZONE_PLATFORM = wayland;
-        SDL_VIDEODRIVER = wayland;
+        QT_QPA_PLATFORM = "wayland";
+        CLUTTER_BACKEND = "wayland";
+        GDK_BACKEND = "wayland";
+        OZONE_PLATFORM = "wayland";
+        SDL_VIDEODRIVER = "wayland";
 
         KDE_SESSION_VERSION = 6;
         MOZ_ENABLE_WAYLAND = 1;
@@ -105,6 +105,21 @@
         PIPEWIRE_LATENCY = 128/48000;
         _JAVA_AWT_WM_NONEREPARENTING = 1;
     };
+    systemPackages = with pkgs; [
+      git
+      wget
+      curl
+      bluez
+      blueman
+      gvfs
+      ntfs3g
+      gdk-pixbuf
+      avahi
+      swayosd
+      polkit_gnome
+      greetd.greetd
+      greetd.gtkgreet
+    ];
   };
 
   # Enable touchpad support (enabled default in most desktopManager).
@@ -144,7 +159,7 @@
     
     
     light.enable = true;
-  }
+  };
   # This value determines the NixOS release from which the default
   # settings for stateful data, like file locations and database versions
   # on your system were taken. It‘s perfectly fine and recommended to leave
@@ -155,5 +170,5 @@
     stateVersion = "24.05"; # Did you read the comment?
     # autoUpgrade.enable = true;
     # autoUpgrade.allowReboot = true;
-  }
+  };
 }
