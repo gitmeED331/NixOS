@@ -17,20 +17,7 @@
 in {
   options.display.river.enable = lib.mkEnableOption "river wm";
 
-  config = lib.mkIf config.river.enable {
-
-
-      programs.river = {
-        enable = true;
-        extraPackages = with pkgs; [
-          wl-clipboard
-          grim
-          slurp
-          grimblast
-          satty
-        ];
-      };
-
+  config = lib.mkIf config.display.river.enable {
       xdg.portal = {
         enable = true;
         extraPortals = with pkgs; [
@@ -57,7 +44,16 @@ in {
           size = 10;
         };
       };
-
+        home.packages = with pkgs; [
+          grimblast
+          swww
+          satty
+          playerctl
+          wl-clipboard
+          grim
+          slurp
+        ];
+        
       home.pointerCursor = {
         gtk.enable = true;
         name = "Bibata-Modern-Classic";
@@ -74,6 +70,7 @@ in {
       in {
         enable = true;
         xwayland.enable = true;
+        
         settings = let
           main = "Super";
           ssm = "Super+Shift";

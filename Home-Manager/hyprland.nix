@@ -15,13 +15,7 @@ in {
     enable = lib.mkEnableOption "Hyprland";
   };
 
-  config = lib.mkIf config.hyprland.enable {
-      programs.hyprland = {
-        enable = true;
-        package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-        xwayland.enable = true;
-      };
-      
+  config = lib.mkIf config.hyprland.enable {   
       xdg.portal = {
         enable = true;
         extraPortals = with pkgs; [
@@ -32,6 +26,7 @@ in {
       };
 
         home.packages = with pkgs; [
+          wl-clipboard
           grimblast
           swww
           satty
