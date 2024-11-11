@@ -16,14 +16,10 @@ in {
   };
 
   config = lib.mkIf config.hyprland.enable {
-      programs = {
-        hyprland = {
-          enable = true;
-          package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
-          #package = inputs.hyprland.packages.${pkgs.system}.hyprland;
-          xwayland.enable = true;
-        };
-        hyprlock.enable = true;
+      programs.hyprland = {
+        enable = true;
+        package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+        xwayland.enable = true;
       };
       
       xdg.portal = {
