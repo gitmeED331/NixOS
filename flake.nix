@@ -1,0 +1,53 @@
+{
+  description = ''
+    A Nix flake for the Hyprland window manager.
+    <https://github.com/hyprwm/hyprland>
+  '';
+
+  inputs = {
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+
+    home-manager = {
+      url = "github:nix-community/home-manager";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    ags = {
+      url = "github:aylur/ags/v2";
+    };
+
+    hyprland = {
+      url = "github:hyprwm/hyprland";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
+
+    auto-cpufreq = {
+            url = "github:AdnanHodzic/auto-cpufreq";
+            inputs.nixpkgs.follows = "nixpkgs";
+        };
+  };
+
+  outputs = inputs @ {
+    nixpkgs,
+    home-manager,
+    auto-cpufreq,
+    ...
+  }: {
+    nixosConfigurations = {
+      Dragon = nixpkgs.lib.nixosSystem {
+        specialArgs = {inherit inputs;};
+        modules = [
+          auto-cpufreq.nixosModules.default
+          home-manager.nixosModules.home-manager
+          {
+            home-manager.backupFileExtension = "backup";
+            home-manager.useGlobalPkgs = true;
+            home-manager.useUserPackages = true;
+            home-manager.users.topsykrets = import ./home.nix;
+            home-manager.extraSpecialArgs = {inherit inputs;};
+          }
+        ];
+      };
+    };
+  };
+}
