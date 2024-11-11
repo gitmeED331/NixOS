@@ -2,6 +2,8 @@
   pkgs,
   ...
 }: {
+   # List packages installed in system profile. To search, run:
+  # $ nix search wget
 home.packages = with pkgs; [
     # theming
     linearicons-free
@@ -78,24 +80,6 @@ home.packages = with pkgs; [
     
   ];
 
- # List packages installed in system profile. To search, run:
-  # $ nix search wget
-  environment = {
-    systemPackages = with pkgs; [
-      home-manager
-      git
-      wget
-      curl
-      bluez
-      blueman
-      gvfs
-      ntfs3g
-      gdk-pixbuf
-      avahi
-      swayosd
-      polkit_gnome
-      greetd.greetd
-      greetd.gtkgreet
-    ];
-  };
+
+
 }

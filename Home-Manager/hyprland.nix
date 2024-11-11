@@ -5,44 +5,38 @@
   config,
   ...
 }: let
-  cfg = config.display.hyprland;
+  hyprland = inputs.hyprland.packages.${pkgs.system}.hyprland;
+  playerctl = "${pkgs.playerctl}/bin/playerctl";
+  light = "${pkgs.light}/bin/light";
+
   inherit (lib) mkEnableOption mkIf mkMerge mapAttrsToList;
 in {
-  options.display.hyprland = {
-    enable = mkEnableOption "hyprland";
+  options.hyprland = {
+    enable = lib.mkEnableOption "Hyprland";
   };
 
-  config = mkMerge [
-    {
-      inputs = {
-        hyprland.url = "git+https://github.com/hyprwm/Hyprland?submodules=1";
-
-        hyprcontrib = {
-          url = "github:hyprwm/contrib";
-          inputs.nixpkgs.follows = "nixpkgs";
+  config = lib.mkIf config.hyprland.enable {
+      programs = {
+        hyprland = {
+          enable = true;
+          package = inputs.hyprland.packages.${pkgs.stdenv.hostPlatform.system}.hyprland;
+          #package = inputs.hyprland.packages.${pkgs.system}.hyprland;
+          xwayland.enable = true;
         };
+        hyprlock.enable = true;
       };
-    }
-
-    (mkIf cfg.enable {
-      os = {
-        programs.hyprland = {
-          enable = true;
-        };
-
-        xdg.portal = {
-          enable = true;
-          extraPortals = with pkgs; [
-            xdg-desktop-portal-hyprland
-            xdg-desktop-portal-gtk
-            xdg-desktop-portal-wlr
-          ];
-        };
+      
+      xdg.portal = {
+        enable = true;
+        extraPortals = with pkgs; [
+          xdg-desktop-portal-hyprland
+          xdg-desktop-portal-gtk
+          xdg-desktop-portal-wlr
+        ];
       };
 
-      hm = {
         home.packages = with pkgs; [
-          inputs.hyprcontrib.packages.${pkgs.system}.grimblast
+          grimblast
           swww
           satty
           playerctl
@@ -51,7 +45,7 @@ in {
         wayland.windowManager.hyprland = {
           enable = true;
           xwayland.enable = true;
-          plugins = [inputs.hy3.packages.x86_64-linux.hy3];
+          plugins = [];
           package = inputs.hyprland.packages.${pkgs.system}.hyprland;
           systemd = {
             enable = true;
@@ -70,13 +64,17 @@ in {
 
             #stolen from fufexan
 
-            screenshotarea = "hyprctl keyword animation 'fadeOut,0,0,default'; grimblast --notify copysave area; hyprctl keyword animation 'fadeOut,1,4,default'";
-            # screensatty = "$satty --filename - --fullscreen --output-filename ~/Pictures/Screenshots/satty-$(date '+%Y%m%d-%H:%M:%S').png";
+            screenarea = "grimbblast save area - | satty --filename - ";
+            screenactive = "grimblast save active - | satty --filename - ";
+            screenfull = "grimblast save full - | satty --filename - ";
+
+            recordarea = ''wf-recorder -g "$(slurp)" -x yuv420p -c libx264 -f "$(satty --filename -)"'';
+            recordfull = ''wf-recorder -x yuv420p -c libx264 -f "$(satty --filename -)"'';
           in {
             env = mapAttrsToList (name: value: "${name},${toString value}") {
-              XDG_CURRENT_DESKTOP = Hyprland;
-              XDG_SESSION_DESKTOP = Hyprland;
-              XDG_SESSION_TYPE = wayland;
+              XDG_CURRENT_DESKTOP = "Hyprland";
+              XDG_SESSION_DESKTOP = "Hyprland";
+              XDG_SESSION_TYPE = "wayland";
 
               HYPRLAND_NO_SD_NOTIFY = 1;
               
@@ -265,7 +263,7 @@ in {
               "CTRL, D,exec, ferdium"
 
               #screenshot
-              ", Print, exec, ${screenshotarea}"
+              ", Print, exec, ${screenarea}"
               "$mod SHIFT, R, exec, grimblast --freeze save area - | satty -f- --early-exit --copy-command wl-copy --init-tool rectangle"
               "CTRL, Print, exec, grimblast --notify --cursor copysave output"
               "$mod SHIFT CTRL, R, exec, grimblast --notify --cursor copysave output"
@@ -343,7 +341,5 @@ in {
             ];
           };
         };
-      };
-    })
-  ];
+    };
 }

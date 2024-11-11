@@ -2,33 +2,23 @@
   pkgs,
   config,
   lib,
+  ags,
   ...
 }: let
-  cfg = config.display.river;
+  playerctl = "${pkgs.playerctl}/bin/playerctl";
+  light = "${pkgs.light}/bin/light";
+
+      screenarea = "grimbblast save area - | satty --filename - ";
+      screenactive = "grimblast save active - | satty --filename - ";
+      screenfull = "grimblast save full - | satty --filename - ";
+
+      recordarea = ''wf-recorder -g "$(slurp)" -x yuv420p -c libx264 -f "$(satty --filename -)"'';
+      recordfull = ''wf-recorder -x yuv420p -c libx264 -f "$(satty --filename -)"'';
 in {
   options.display.river.enable = lib.mkEnableOption "river wm";
 
-  config = lib.mkIf cfg.enable {
-    os = {
-      # services.displayManager.sessionPackages = let
-      #   session = pkgs.stdenvNoCC.mkDerivation {
-      #     name = "river-wayland-session";
-      #     src = pkgs.writeTextDir "entry" ''
-      #       Desktop Entry]
-      #       Name=River
-      #       Comment=A dynamic tiling Wayland compositor
-      #       Exec=river
-      #       Type=Application
-      #     '';
-      #     dontBuild = true;
+  config = lib.mkIf config.river.enable {
 
-      #     installPhase = ''
-      #       mkdir -p $out/share/wayland-sessions
-      #       cp entry $out/share/wayland-sessions/river.desktop
-      #     '';
-      #     passthru.providedSessions = ["river"];
-      #   };
-      # in [session];
 
       programs.river = {
         enable = true;
@@ -48,22 +38,6 @@ in {
           xdg-desktop-portal-wlr
         ];
       };
-    };
-
-    hm = let
-      cursor = {
-        package = pkgs.bibata-cursors;
-        name = "Bibata-Modern-Classic";
-        size = 16;
-      };
-
-      screenarea = "grimblast save area - | satty --filename - ";
-      screenactive = "grimblast save active - | satty --filename - ";
-      screenfull = "grimblast save full - | satty --filename - ";
-
-      recordarea = ''wf-recorder -g "$(slurp)" -x yuv420p -c libx264 -f "${satty --filename -}"'';
-      recordfull = ''wf-recorder -x yuv420p -c libx264 -f "${satty --filename -}"'';
-    in {
 
       gtk = {
         enable = true;
@@ -86,11 +60,11 @@ in {
 
       home.pointerCursor = {
         gtk.enable = true;
-        name = cursor.name;
-        package = cursor.package;
-        size = cursor.size;
+        name = "Bibata-Modern-Classic";
+        package = pkgs.bibata-cursors;
+        size = 16;
         x11 = {
-          defaultCursor = cursor.name;
+          defaultCursor = "Bibata-Modern-Classic";
           enable = true;
         };
       };
@@ -118,7 +92,7 @@ in {
           map = {
             normal = {
               "${ssm} Q" = "close";
-              "Super Return" = "spawn ${config.defaults.terminal}";
+              "Super Return" = "spawn terminator";
               "${main} E" = "spawn pcmanfm";
               "${main} W" = "spawn vivaldi";
 
@@ -129,7 +103,7 @@ in {
               "${sam} W" = ''spawn "ags toggle wallpapers"'';
               "${main} X" = ''spawn "ags toggle dashboard"'';
               "${ssm} Escape" = ''spawn "ags toggle sessioncontrols"'';
-              "${main} L" = ''spawn "ags -i lockscreen -c ~/.config/ags/Lockscreen"'';
+              "${scm} L" = ''spawn "ags -i lockscreen -c ~/.config/ags/Lockscreen"'';
 
               #screenShots Not Done yet
               "Print" = ''spawn "${screenarea}"'';
@@ -137,7 +111,7 @@ in {
               "${ssm} Print" = "spawn ${screenactive}";
               "${main} S" = "spawn ${recordarea}";
               "${ssm} S" = "spawn ${recordfull}";
-              "${ssm} S" = "spawn killall wf-recorder";
+              "${scm} S" = "spawn killall wf-recorder";
               
               "${ssm} F" = "toggle-fullscreen";
               "${main} Z" = "zoom";
@@ -251,5 +225,4 @@ in {
         '';
       };
     };
-  };
-}
+  }
