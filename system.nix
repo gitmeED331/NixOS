@@ -1,7 +1,4 @@
-{ config, lib, pkgs, ... }:
-
-{
-
+{ config, lib, pkgs, ... }:{
   boot = {
     initrd.availableKernelModules = [ "xhci_pci" "ahci" "usb_storage" "usbhid" "sd_mod" "sr_mod" "rtsx_pci_sdmmc" ];
     initrd.kernelModules = [ ];
@@ -16,7 +13,7 @@
   };
 
  programs = {
-    direnv.enable = true;
+    # direnv.enable = true;
     dconf.enable = true;
 
     # Some programs need SUID wrappers, can be configured further or are
@@ -83,7 +80,7 @@
     sessionVariables = {
         XDG_SESSION_TYPE = "wayland";
         NIXOS_OZONE_WL = "1";
-        
+
         TERM = "terminator";
 
         QT_QPA_PLATFORM = "wayland";

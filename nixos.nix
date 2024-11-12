@@ -13,12 +13,19 @@ in {
     ./nautilus.nix
     ./login.nix
   ];
+
   nixpkgs.config.allowUnfree = true;
+  
   #programs = {
   #  hyprland.enable = true;
   #  river.enable = true;
   #  hyprlock.enable = true;
-  #};
+  #  starship.enable = true;
+  #  gnome.enable = true;
+  #  sddm.enable = true;
+  #  sddm.theme = "Nordic";
+  #  sddm.themeVariant = "dark";
+   #};
 
 # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.${username} = {
