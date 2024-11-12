@@ -140,8 +140,8 @@ in {
               "${modas} L" = "resize horizontal 100";
 
               #increase and decrease the main ratio of rivertile
-              "${main} L" = ''send-layout-cmd ${layout} "main-ratio -0.05"'';
-              "${main} H" = ''send-layout-cmd ${layout} "main-ratio +0.05"'';
+              "${mod} L" = ''send-layout-cmd ${layout} "main-ratio -0.05"'';
+              "${mod} H" = ''send-layout-cmd ${layout} "main-ratio +0.05"'';
 
               #increment/decrement the main count of rivertile(1)
               "${mods} H" = ''send-layout-cmd ${layout} "main-count +1"'';
