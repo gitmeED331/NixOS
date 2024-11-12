@@ -15,7 +15,7 @@ in {
     enable = lib.mkEnableOption "Hyprland";
   };
 
-  config = lib.mkIf config.hyprland.enable {   
+  config = lib.mkIf config.hyprland.enable {        
       xdg.portal = {
         enable = true;
         extraPortals = with pkgs; [
@@ -23,6 +23,7 @@ in {
           xdg-desktop-portal-gtk
           xdg-desktop-portal-wlr
         ];
+        config.common.default = "*";
       };
 
         home.packages = with pkgs; [
@@ -31,6 +32,7 @@ in {
           swww
           satty
           playerctl
+          kitty
         ];
 
         wayland.windowManager.hyprland = {
@@ -65,7 +67,6 @@ in {
             env = mapAttrsToList (name: value: "${name},${toString value}") {
               XDG_CURRENT_DESKTOP = "Hyprland";
               XDG_SESSION_DESKTOP = "Hyprland";
-              XDG_SESSION_TYPE = "wayland";
 
               HYPRLAND_NO_SD_NOTIFY = 1;
               
@@ -202,7 +203,6 @@ in {
               disable_autoreload = true;
 
               enable_swallow = true; # hide windows that spawn other windows
-              swallow_regex = "foot|footclient"; # windows for which swallow is applied
 
               disable_splash_rendering = true;
               mouse_move_enables_dpms = true;
@@ -245,39 +245,53 @@ in {
               "$mod, mouse_up, workspace, e+1"
 
               #Programs related
-              # "$mod, space, exec, anyrun"
-              "$mod, space, exec, "
-              # Launches foot with a tmux sesison -> got it from https://discord.com/channels/601130461678272522/1136357112579108904
-              "$mod, return, exec,wezterm "
-              "CTRL,F,exec, floorp "
+              "$mod, R, exec, ags toggle launcher"
+              "$cmod, R, exec, rofi -show combi"
+              
+              "$mod, return, exec, terminator"
+              "$mod, W, exec, vivaldi"
+              "$mod, E, exec, pcmanfm"
+              
+              "$scmod, R, exec , ags -q; ags"
+              "$mod, ESCAPE, exec, ags toggle sessioncontrols"
+              "$mod, L, exec, ags -i lockscreen -c ~/.config/ags/Lockscreen" # hyprlock
+              "$mod, V, exec, ags toggle cliphist"
+              "$mod, space, exec, ags toggle dashboard"
+              "$amod, W, exec, ags toggle wallpapers"
 
-              "CTRL, D,exec, ferdium"
+              "$smod, Z,exec,hyprpicker -a -n"
 
               #screenshot
               ", Print, exec, ${screenarea}"
-              "$mod SHIFT, R, exec, grimblast --freeze save area - | satty -f- --early-exit --copy-command wl-copy --init-tool rectangle"
-              "CTRL, Print, exec, grimblast --notify --cursor copysave output"
-              "$mod SHIFT CTRL, R, exec, grimblast --notify --cursor copysave output"
-              "ALT, Print, exec, grimblast --notify --cursor copysave screen"
-              "$mod SHIFT ALT, R, exec, grimblast --notify --cursor copysave screen"
+              "ALT, Pring, exec, ${screenactive}"
+              "CTRL, Print, exec, ${screenfull}"
+              "$mod, Print, exec, ${recordarea}"
+              "$smod, Print, exec, ${recordfull}"
+              "$scmod, Print, exec, pkill wf-recorder"
+
+              #"$mod SHIFT, R, exec, grimblast --freeze save area - | satty -f- --early-exit --copy-command wl-copy --init-tool rectangle"
+              #"CTRL, Print, exec, grimblast --notify --cursor copysave output"
+              #"$mod SHIFT CTRL, R, exec, grimblast --notify --cursor copysave output"
+              #"ALT, Print, exec, grimblast --notify --cursor copysave screen"
+              #"$mod SHIFT ALT, R, exec, grimblast --notify --cursor copysave screen"
 
               #windows managment related
               "$mod, SEMICOLON, exit,"
               "$smod, f, fullscreen"
-              "$mod, v, togglefloating"
+              "$mod, f, togglefloating"
+              "$amod, p, pin"
 
-              "$smod, q, hy3:killactive"
+              "$mod, q, killactive"
 
-              "$mod, d, hy3:makegroup, h"
-              "$mod, s, hy3:makegroup, v"
-              # "$smod,s  ,exec, hyprlock"
-              "$mod, TAB, hy3:makegroup, tab"
-              "$mod, a, hy3:changefocus, raise"
-              "$smod, a, hy3:changefocus, lower"
-              "$mod, e, hy3:expand, expand"
-              "$smod, e, hy3:expand, base"
-              "$mod, r, hy3:changegroup, opposite"
-              "$scmod, r, hy3:changegroup, toggletab "
+              "$mod, d, makegroup, h"
+              "$mod, s, makegroup, v"
+              "$mod, TAB, makegroup, tab"
+              "$mod, a, changefocus, raise"
+              "$smod, a, changefocus, lower"
+              "$mod, e, expand, expand"
+              "$smod, e, expand, base"
+              "$mod, r, changegroup, opposite"
+              "$scmod, r, changegroup, toggletab "
 
               ",XF86AudioPlay,exec,${playerctl} play-pause"
               ",XF86AudioPrev,exec,${playerctl} previous"
@@ -285,6 +299,9 @@ in {
 
               ",XF86AudioMute,exec,swayosd-client --output-volume mute-toggle"
               ",XF86AudioMicMute,exec,swayosd-client --input-volume mute-toggle"
+
+              ", XF86MonBrightnessUp, exec, light -A 10"
+              ", XF86MonBrightnessDown, exec, light -U 10"
 
               # WORKSPACE MOVEMENT
               "${builtins.concatStringsSep "\n" (builtins.genList (

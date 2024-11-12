@@ -2,9 +2,14 @@
   pkgs,
   ...
 }: {
+  
    # List packages installed in system profile. To search, run:
   # $ nix search wget
 home.packages = with pkgs; [
+    # environments
+    hyprland
+    river
+
     # theming
     linearicons-free
     icon-library
@@ -32,6 +37,7 @@ home.packages = with pkgs; [
     lsd
     gawk
     terminator
+    kitty
 
     # comms
     vesktop

@@ -2,7 +2,6 @@
   pkgs,
   config,
   lib,
-  ags,
   ...
 }: let
   playerctl = "${pkgs.playerctl}/bin/playerctl";
@@ -15,15 +14,16 @@
       recordarea = ''wf-recorder -g "$(slurp)" -x yuv420p -c libx264 -f "$(satty --filename -)"'';
       recordfull = ''wf-recorder -x yuv420p -c libx264 -f "$(satty --filename -)"'';
 in {
-  options.display.river.enable = lib.mkEnableOption "river wm";
+  options.river.enable = lib.mkEnableOption "river";
 
-  config = lib.mkIf config.display.river.enable {
+  config = lib.mkIf config.river.enable {
       xdg.portal = {
         enable = true;
         extraPortals = with pkgs; [
           xdg-desktop-portal-gtk
           xdg-desktop-portal-wlr
         ];
+        config.common.default = "*";
       };
 
       gtk = {
@@ -44,15 +44,17 @@ in {
           size = 10;
         };
       };
-        home.packages = with pkgs; [
-          grimblast
-          swww
-          satty
-          playerctl
-          wl-clipboard
-          grim
-          slurp
-        ];
+      
+      home.packages = with pkgs; [
+        grimblast
+        swww
+        satty
+        playerctl
+        wl-clipboard
+        grim
+        slurp
+        kitty
+      ];
         
       home.pointerCursor = {
         gtk.enable = true;
@@ -72,12 +74,12 @@ in {
         xwayland.enable = true;
         
         settings = let
-          main = "Super";
-          ssm = "Super+Shift";
-          sas = "Super+Alt+Shift";
-          sam = "Super+Alt";
-          scm = "Super+Control";
-          scam = "Super+Control+Alt";
+          mod = "Super";
+          mods = "Super+Shift";
+          modas = "Super+Alt+Shift";
+          moda = "Super+Alt";
+          modc = "Super+Control";
+          modca = "Super+Control+Alt";
         in {
           default-layout = "${layout}";
           output-layout = "${layout}";
@@ -88,79 +90,91 @@ in {
           ];
           map = {
             normal = {
-              "${ssm} Q" = "close";
-              "Super Return" = "spawn terminator";
-              "${main} E" = "spawn pcmanfm";
-              "${main} W" = "spawn vivaldi";
+              "${mods} Q" = "close";
+              "${mod} Return" = "spawn terminator";
+              "${mod} E" = "spawn pcmanfm";
+              "${mod} W" = "spawn vivaldi";
 
-              "${main} SPACE" = ''spawn "ags toggle launcher"'';
-              "${sam} SPACE" = ''spawn "rofi -show combi"'';
+              "${mod} SPACE" = ''spawn "ags toggle launcher"'';
+              "${moda} SPACE" = ''spawn "rofi -show combi"'';
 
-              "${main} V" = ''spawn "ags toggle cliphist"'';
-              "${sam} W" = ''spawn "ags toggle wallpapers"'';
-              "${main} X" = ''spawn "ags toggle dashboard"'';
-              "${ssm} Escape" = ''spawn "ags toggle sessioncontrols"'';
-              "${scm} L" = ''spawn "ags -i lockscreen -c ~/.config/ags/Lockscreen"'';
+              "${mod} V" = ''spawn "ags toggle cliphist"'';
+              "${moda} W" = ''spawn "ags toggle wallpapers"'';
+              "${mod} X" = ''spawn "ags toggle dashboard"'';
+              "${mod} Escape" = ''spawn "ags toggle sessioncontrols"'';
+              "${mod} L" = ''spawn "ags -i lockscreen -c ~/.config/ags/Lockscreen"'';
 
               #screenShots Not Done yet
               "Print" = ''spawn "${screenarea}"'';
-              "${main} Print" = "spawn ${screenfull}";
-              "${ssm} Print" = "spawn ${screenactive}";
-              "${main} S" = "spawn ${recordarea}";
-              "${ssm} S" = "spawn ${recordfull}";
-              "${scm} S" = "spawn killall wf-recorder";
+              "Alt Print" = "spawn ${screenactive}";
+              "CTRL Print" = "spawn ${screenfull}";
+              "${mod} Print" = "spawn ${recordarea}";
+              "${mods} Print" = "spawn ${recordfull}";
+              "${modsc} Print" = "spawn killall wf-recorder";
               
-              "${ssm} F" = "toggle-fullscreen";
-              "${main} Z" = "zoom";
-              "${main} F" = "toggle-float";
-              "${main} J" = "focus-view previous";
-              "${main} K" = "focus-view next";
-              "${ssm} Period" = "send-to-output next";
-              "${ssm} Comma" = "send-to-output previous";
+              "${mods} F" = "toggle-fullscreen";
+              "${mod} Z" = "zoom";
+              "${mod} F" = "toggle-float";
+              "${mod} J" = "focus-view previous";
+              "${mod} K" = "focus-view next";
+              "${mods} Period" = "send-to-output next";
+              "${mods} Comma" = "send-to-output previous";
 
               # move viewss
-              "${sam} H" = "move left 100";
-              "${sam} J" = "move down 100";
-              "${sam} K" = "move up 100";
-              "${sam} L" = "move right 100";
+              "${moda} H" = "move left 100";
+              "${moda} J" = "move down 100";
+              "${moda} K" = "move up 100";
+              "${moda} L" = "move right 100";
 
               # snap vies to screen edges
-              "${scam} H" = "snap left";
-              "${scam} J" = "snap down";
-              "${scam} K" = "snap up";
-              "${scam} L" = "snap right";
+              "${modca} H" = "snap left";
+              "${modca} J" = "snap down";
+              "${modca} K" = "snap up";
+              "${modca} L" = "snap right";
 
               # resize views
-              "${sas} H" = "resize horizontal -100";
-              "${sas} J" = "resize vertical 100";
-              "${sas} K" = "resize vertical -100";
-              "${sas} L" = "resize horizontal 100";
+              "${modas} H" = "resize horizontal -100";
+              "${modas} J" = "resize vertical 100";
+              "${modas} K" = "resize vertical -100";
+              "${modas} L" = "resize horizontal 100";
 
               #increase and decrease the main ratio of rivertile
               "${main} L" = ''send-layout-cmd ${layout} "main-ratio -0.05"'';
               "${main} H" = ''send-layout-cmd ${layout} "main-ratio +0.05"'';
 
               #increment/decrement the main count of rivertile(1)
-              "${ssm} H" = ''send-layout-cmd ${layout} "main-count +1"'';
-              "${ssm} L" = ''send-layout-cmd ${layout} "main-count -1"'';
+              "${mods} H" = ''send-layout-cmd ${layout} "main-count +1"'';
+              "${mods} L" = ''send-layout-cmd ${layout} "main-count -1"'';
             };
           };
           spawn = [
-            ''${layout}''
-            "${pkgs.wl-clipboard}/bin/wl-paste --watch ${pkgs.cliphist}/bin/cliphist store #Stores only text data"
-            "${pkgs.bash} startup.sh"
+            "${layout}"
             "ags run"
+            "${pkgs.swwww}/bin/swww-daemon && ${pkgs.swww}/bin/swww restore"
+            "${pkgs.wl-clipboard}/bin/wl-paste --watch ${pkgs.cliphist}/bin/cliphist store"
+            "signal-desktop --start-in-tray"
+
             "udiskie --tray"
+            "swayosd-server"
+            "kdeconnect-indicator"
+
+            "keepassxc"
+            # "ente_auth"
+            
+            # "cryptomator"
+            "pcloud"
+            "filen-desktop"
+            # "synology-drive"
           ];
 
-          rule-add = {
-            "-app-id" = {
-              "'vivaldi'" = "ssd";
-            };
-          };
+         # rule-add = {
+         #   "-app-id" = {
+         #     "'vivaldi'" = "ssd";
+         #   };
+         # };
 
-          xcursor-theme = "phinger-cursors";
-          set-repeat = "50 300";
+          # xcursor-theme = "phinger-cursors";
+          # set-repeat = "50 300";
           focus-follows-cursor = "normal";
 
           map-pointer = {
