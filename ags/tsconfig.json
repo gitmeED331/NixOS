@@ -1,0 +1,25 @@
+{
+    "$schema": "https://json.schemastore.org/tsconfig",
+    "compilerOptions": {
+        "experimentalDecorators": true,
+        "strict": true,
+        "target": "ES2023",
+        "lib": [
+            "ES2023",
+            "DOM"
+        ],
+        "moduleResolution": "Bundler",
+        // "checkJs": true,
+        // "allowJs": true,
+        "jsx": "react-jsx",
+        "jsxImportSource": "/home/topsykrets/.local/share/ags/gtk3",
+        "paths": {
+            "astal": [
+                "/home/topsykrets/.local/share/ags"
+            ],
+            "astal/*": [
+                "/home/topsykrets/.local/share/ags/*"
+            ]
+        },
+    }
+}
