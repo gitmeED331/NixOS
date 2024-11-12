@@ -80,6 +80,7 @@ in {
           moda = "Super+Alt";
           modc = "Super+Control";
           modca = "Super+Control+Alt";
+          modsc = "Super+Shift+Control"
         in {
           default-layout = "${layout}";
           output-layout = "${layout}";
