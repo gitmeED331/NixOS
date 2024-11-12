@@ -57,7 +57,7 @@ home.packages = with pkgs; [
     swww
     slurp
     grim
-    grimblast
+    satty
     wf-recorder
     cliphist
     kdePackages.kdeconnect-kde
@@ -78,6 +78,7 @@ home.packages = with pkgs; [
     pdfstudio2023
     softmaker-office
     synology-drive-client
+    obsidian
 
     # security
     hyprlock

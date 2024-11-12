@@ -7,12 +7,11 @@
   playerctl = "${pkgs.playerctl}/bin/playerctl";
   light = "${pkgs.light}/bin/light";
 
-      screenarea = "grimbblast save area - | satty --filename - ";
-      screenactive = "grimblast save active - | satty --filename - ";
-      screenfull = "grimblast save full - | satty --filename - ";
+      screenarea = ''grim -g "$(slurp)" "$(xdg-user-dir PICTURES)/Pictures/Screen/Screenshot-area_$(date +%y-%m-%d_%H%M-%S).png"'';
+      screenfull = ''grim "$(xdg-user-dir PICTURES)/Pictures/Screenshot-full_$(date +%y-%m-%d_%H%M-%S).png"'';
 
-      recordarea = ''wf-recorder -g "$(slurp)" -x yuv420p -c libx264 -f "$(satty --filename -)"'';
-      recordfull = ''wf-recorder -x yuv420p -c libx264 -f "$(satty --filename -)"'';
+      recordarea = ''wf-recorder -g "$(slurp)" -x yuv420p -c libx264 -f "$(xdg-user-dir PICTURES)/Screenrecording-area_$(date +%y-%m-%d_%H%M-%S).mp4"'';
+      recordfull = ''wf-recorder -x yuv420p -c libx264 -f "$(xdg-user-dir PICTURES)/Screenrecording-full_$(date +%y-%m-%d_%H%M-%S).mp4"'';
 in {
   options.river.enable = lib.mkEnableOption "river";
 
@@ -46,13 +45,12 @@ in {
       };
       
       home.packages = with pkgs; [
-        grimblast
         swww
-        satty
         playerctl
         wl-clipboard
         grim
         slurp
+        playerctl
         kitty
       ];
         
@@ -72,6 +70,10 @@ in {
       in {
         enable = true;
         xwayland.enable = true;
+          systemd = {
+            enable = true;
+            variables = ["--all"];
+          };
         
         settings = let
           mod = "Super";
@@ -107,11 +109,10 @@ in {
 
               #screenShots Not Done yet
               "Print" = ''spawn "${screenarea}"'';
-              "Alt Print" = "spawn ${screenactive}";
-              "CTRL Print" = "spawn ${screenfull}";
-              "${mod} Print" = "spawn ${recordarea}";
-              "${mods} Print" = "spawn ${recordfull}";
-              "${modsc} Print" = "spawn killall wf-recorder";
+              "CTRL Print" = ''spawn "${screenfull}"'';
+              "${mod} Print" = ''spawn "${recordarea}"'';
+              "${mods} Print" = ''spawn "${recordfull}"'';
+              "${modsc} Print" = ''spawn "killall wf-recorder"'';
               
               "${mods} F" = "toggle-fullscreen";
               "${mod} Z" = "zoom";

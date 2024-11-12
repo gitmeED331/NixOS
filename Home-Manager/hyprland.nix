@@ -28,9 +28,9 @@ in {
 
         home.packages = with pkgs; [
           wl-clipboard
-          grimblast
           swww
-          satty
+          grim
+          slurp
           playerctl
           kitty
         ];
@@ -57,12 +57,11 @@ in {
 
             #stolen from fufexan
 
-            screenarea = "grimbblast save area - | satty --filename - ";
-            screenactive = "grimblast save active - | satty --filename - ";
-            screenfull = "grimblast save full - | satty --filename - ";
+            screenarea = ''grim -g "$(slurp)" "$(xdg-user-dir PICTURES)/Pictures/Screen/Screenshot-area_$(date +%y-%m-%d_%H%M-%S).png"'';
+            screenfull = ''grim "$(xdg-user-dir PICTURES)/Pictures/Screenshot-full_$(date +%y-%m-%d_%H%M-%S).png"'';
 
-            recordarea = ''wf-recorder -g "$(slurp)" -x yuv420p -c libx264 -f "$(satty --filename -)"'';
-            recordfull = ''wf-recorder -x yuv420p -c libx264 -f "$(satty --filename -)"'';
+            recordarea = ''wf-recorder -g "$(slurp)" -x yuv420p -c libx264 -f "$(xdg-user-dir PICTURES)/Screenrecording-area_$(date +%y-%m-%d_%H%M-%S).mp4"'';
+            recordfull = ''wf-recorder -x yuv420p -c libx264 -f "$(xdg-user-dir PICTURES)/Screenrecording-full_$(date +%y-%m-%d_%H%M-%S).mp4"'';
           in {
             env = mapAttrsToList (name: value: "${name},${toString value}") {
               XDG_CURRENT_DESKTOP = "Hyprland";
@@ -263,7 +262,6 @@ in {
 
               #screenshot
               ", Print, exec, ${screenarea}"
-              "ALT, Pring, exec, ${screenactive}"
               "CTRL, Print, exec, ${screenfull}"
               "$mod, Print, exec, ${recordarea}"
               "$smod, Print, exec, ${recordfull}"
@@ -293,12 +291,12 @@ in {
               "$mod, r, changegroup, opposite"
               "$scmod, r, changegroup, toggletab "
 
-              ",XF86AudioPlay,exec,${playerctl} play-pause"
-              ",XF86AudioPrev,exec,${playerctl} previous"
-              ",XF86AudioNext,exec,${playerctl} next"
+              ", XF86AudioPlay, exec, ${playerctl} play-pause"
+              ", XF86AudioPrev, exec, ${playerctl} previous"
+              ", XF86AudioNext, exec, ${playerctl} next"
 
-              ",XF86AudioMute,exec,swayosd-client --output-volume mute-toggle"
-              ",XF86AudioMicMute,exec,swayosd-client --input-volume mute-toggle"
+              ", XF86AudioMute, exec, swayosd-client --output-volume mute-toggle"
+              ", XF86AudioMicMute, exec, swayosd-client --input-volume mute-toggle"
 
               ", XF86MonBrightnessUp, exec, light -A 10"
               ", XF86MonBrightnessDown, exec, light -U 10"
@@ -335,17 +333,138 @@ in {
               "$mod,mouse:273,resizewindow"
             ];
 
+            workspace = [
+              "special,on-created-empty:[pseudo]"
+              "special,on-created-empty:[float] konsole"
+              # "special:special,on-created-empty:[master]"
+              # "special:passes,on-created-empty:[pseudo]"
+
+              "1,monitor:eDP-1,persistent:true"
+              # "special:passess,persistent:true"
+            ];
+
             windowrule = [
               "center,^(leagueclientux.exe)$"
               "center,^(league of legends.exe)$"
               # "forceinput,^(league of legends.exe)$"
               "size 1600 900, ^(leaguecientux.exe)$"
+              # Zoom
+              "float, ^(zoom)$"
+              # Bluetooth, network manager
+              "float,^(blueman-manager)$"
+              "float,^(nm-connection-editor)$"
+              "float,^(org.pulseaudio.pavucontrol)$"
+              "float, ^(org.gnome.Settings)$"
             ];
 
             windowrulev2 = [
+              "suppressevent maximize fullscreen, class:(.*)"
+              "windowrulev2 = noblur, class:(.*)"
               "rounding 0, xwayland:1"
-              "float, class:^(leagueclientux.exe)$,title:^(League of Legends)$"
-              # "immediate, class:^(osu\!)$"
+              # --------- Utilities --------
+              "float, class:(lxqt-sudo)"
+
+              "float, class:(org.kde.polkit-kde-authentication-agent-1)"
+              "float,class:^(udiskie)$"
+              "float,class:(org.kde.kdeconnect.daemon), title:(Messages — KDE Connect Daemon)"
+
+              # scratchpads
+              #"float,class:^(scratchpad)$"
+              #"size 1280 720,class:^(scratchpad)$"
+              #"center,class:^(scratchpad)$"
+              #"workspace special silent,class:^(scratchpad)$"
+
+
+              # Action Windows
+              "float, title:(Open File)"
+              "float, title:(Save File)"
+              "float, title:(Choose a directory)"
+
+              # ------- App specific ---------
+              # swayimg
+              "float, class:(swayimg)"
+              "size 400 400, class:(swayimg)"
+
+              # Web Browsers
+              #"float, class:(vivaldi-stable), title:(Vivaldi Settings*)"
+              "workspace special:special, initialClass:(vivaldi-stable), initialTitle:(Vivaldi - Vivaldi)"
+              "float, class:(vivaldi), title:(Print)"
+              "workspace special:special, initialClass:(floorp), initialTitle:(Ablaze Floorp)"
+              "workspace special:special, initialClass:(LibreWolf), initialTitle:(LibreWolf)"
+
+              # Signal
+              "float, class:^(signal)$"
+              "size 1000 600, class:^(signal)$"
+
+              # Simplex-chat
+              "float, class:^(chat-simplex-desktop-MainKt)$"
+              "size 900 500, class:^(chat-simplex-desktop-MainKt)$"
+
+              # Enpass
+              "workspace special:passes, class:(Enpass), title:(Enpass)"
+              "pseudo, class:(Enpass), title:(enpass)"
+              "workspace unset, title:(Enpass Assistant)"
+              "float, class:(enpass), title:(Enpass Assistant)"
+              "workspace unset, silent, class:^(ente_auth)$"
+
+              # Keepass
+              "workspace special:passes, class:^(org.keepassxc.KeePassXC)$"
+              "pseudo, class:^(org.keepassxc.KeePassXC)$"
+              "minsize: 900 500, class:^(org.keepassxc.KeePassXC)$"
+              "workspace unset, class:(org.keepassxc.KeePassXC), title:(KeePassXC - Browser Access Request)"
+              "float, class:(org.keepassxc.KeePassXC), title:(KeePassXC - Browser Access Request)"
+              "workspace unset, class:(org.keepassxc.KeePassXC), title:(Generate Password)"
+              "float, class:(org.keepassxc.KeePassXC), title:(Generate Password)"
+
+              # Geany
+              #"pseudo, class:(geany)"
+              #"pin, class:(geany)"
+
+              # pcmanfm-qt
+              "float, class:(pcmanfm-qt), title:(File Properties)"
+              "float, class:(pcmanfm-qt), title:(Preferences)"
+              "float, class:(pcmanfm-qt), title:(Copy Files)"
+              "float, class:(pcmanfm-qt), title:(Delete Files)"
+              "float, class:(pcmanfm-qt), title:(Choose an Application)"
+
+              # gwenview
+              "float, class:(gwenview)"
+
+              # Dragon (Video Player)
+              "float, class:^(org.kde.dragonplayer)$"
+              "center, class:^(org.kde.dragonplayer)$"
+              "size 1280 720, class:^(org.kde.dragonplayer)$"
+              "idleinhibit always, class:^(org.kde.dragonplayer)$"
+
+              # Gnome Settings
+              "center, class:^(org.gnome.Settings)$"
+              "size 1280 720, class:^(org.gnome.Settings)$"
+
+              # Cryptomator
+              "float, initialClass:(org.cryptomator.launcher.Cryptomator*)"
+              "float, class:(ente_auth)"
+
+              # KDE
+              "float, class:(org.kde.kmymoney)"
+
+              # PDF Studio
+              "float, class:(PDF Studio Pro)"
+
+              # protonvpn
+              "float, class:(protonvpn), title:(Proton VPN)"
+
+              # Deezer
+              "float, class:(Deezer)"
+              "float, class:(deezer-enhanced)"
+              "idleinhibit: always, class:(deezer-enhanced)"
+              "size 1200 750, class:(deezer-enhanced)"
+
+              # Electron apps
+              "float, class:(electron), title:(Open Files)"
+
+              # Kleopatra
+              "float, class:^(org.kde.kleopatra)$"
+              "float, class:^(Rofi)$"             
             ];
           };
         };

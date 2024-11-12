@@ -13,21 +13,22 @@
     dart-sass
     light
     swww
+    grim
     slurp
     wf-recorder
     wl-clipboard
-    grimblast
     swappy
     hyprpicker
     pavucontrol
     networkmanager
     gtk3
     gtk4
+    gtk-session-lock
   ];
   
   programs.ags = {
     enable = true;
-    #configDir = ../../ags;
+    configDir = ../ags;
 
     # additional packages to add to gjs's runtime
     extraPackages = with inputs.ags.packages.${pkgs.system}; [
