@@ -12,9 +12,7 @@
       inputs.nixpkgs.follows = "nixpkgs";
     };
 
-    ags = {
-      url = "github:aylur/ags/v2";
-    };
+    ags.url = "github:aylur/ags/v2";
 
     hyprland = {
       url = "github:hyprwm/hyprland";
@@ -45,7 +43,6 @@
               backupFileExtension = "backup";
               useGlobalPkgs = true;
               useUserPackages = true;
-              #users.topsykrets = import ./home.nix;
               extraSpecialArgs = {inherit inputs;};
             };
             networking.hostName = "Dragon";

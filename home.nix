@@ -19,15 +19,15 @@
       enableSshSupport = true;
     };
     
-    kdeconnect = {
-      enable = true;
-      indicator = true;
-    };
+#    kdeconnect = {
+#      enable = true;
+#      indicator = true;
+#    };
   };
   
   # Home Manager needs a bit of information about you and the
   # paths it should manage.
- home = {
+  home = {
     sessionVariables = {
       NIXOS_OZONE_WL = "1";
       QT_XCB_GL_INTEGRATION = "none"; # kde-connect
@@ -43,17 +43,18 @@
     ];
   };
 
-  xresources.properties = {
-    "Xcursor.size" = 16;
-    #"Xft.dpi" = 172;
-  };
-
+  
   xdg.portal = {
     enable = true;
     extraPortals = with pkgs; [
       xdg-desktop-portal-wlr
       xdg-desktop-portal-gtk
     ];
+    config.common.default = "*";
+  };
+  xresources.properties = {
+    "Xcursor.size" = 16;
+    #"Xft.dpi" = 172;
   };
 
   home.pointerCursor = {
@@ -63,7 +64,7 @@
     name = "Bibata-Modern-Classic";
     size = 16;
   };
-
+ 
   gtk = {
     enable = true;
 
@@ -92,9 +93,7 @@
         "file://${home}/Downloads"
         "file://${home}/Desktop"
         "file://${home}/Work"
-        "file://${home}/Projects"
         "file://${home}/Vault"
-        "file://${home}/School"
         "file://${home}/.config Config"
       ];
   };
@@ -109,102 +108,4 @@
   # the Home Manager release notes for a list of state version
   # changes in each release.
   home.stateVersion = "24.05";
-
-#  home.packages = with pkgs; [
-#    # theming
-#    linearicons-free
-#    icon-library
-#    line-awesome
-#    arc-icon-theme
-#    
-#    # apps
-#    enpass
-#    keepassxc
-#
-#    # archive
-#    zip
-#    xz
-#    unzip
-#    p7zip
-#
-#    # web browser
-#    vivaldi
-#    vivaldi-ffmpeg-codecs
-#
-#    # coding
-#    vscode
-#    lsd
-#    gawk
-#    terminator
-#
-#    # comms
-#    vesktop
-#    signal-desktop
-#    threema-desktop
-#    zoom-us
-#
-#    # utils
-#    git
-#    wget
-#    htop
-#    udiskie
-#    xdg-desktop-portal-hyprland
-#    light
-#    xdg-utils
-#    rofi
-#    wl-clipboard
-#    hyprpicker
-#    swww
-#    slurp
-#    grim
-#    grimblast
-#    wf-recorder
-#    cliphist
-#    kdePackages.kdeconnect-kde
-#
-#    # drivers
-#    hplipWithPlugin
-#    openrazer-daemon
-#
-#    # office
-#    libreoffice-fresh
-#    # cryptomator.override {version = 1.14.0;}
-#    pcloud
-#    pcmanfm
-#    thunderbird
-#    imagemagick
-#    pdfstudio2023
-#    softmaker-office
-#    synology-drive-client
-#
-#    # security
-#    hyprlock
-#    protonvpn-gui
-#    seahorse
-#  ];
-
- # programs.ags = {
- #   enable = true;
- #   # configDir = ../ags;
-#
- #   # additional packages to add to gjs's runtime
- #   extraPackages = with inputs.ags.packages.${pkgs.system}; [
- #     battery
- #     powerprofiles
- #     io
- #     notifd
- #     wireplumber
- #     hyprland
- #     river
- #     apps
- #     bluetooth
- #     network
- #     mpris
- #     tray
- #     cava
- #     auth
- #     greet
- #     pkgs.fzf
- #   ];
- # };
 }

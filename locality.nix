@@ -20,6 +20,6 @@ in
       LC_TIME = "${locality}";
     };
   };
-  console.useXkbConfig = true;
-  services.xserver.xkb.layout = "en";
+  #console.useXkbConfig = true;
+  #services.xserver.xkb.layout = "en";
 }

@@ -81,6 +81,7 @@
 
  environment = {
     sessionVariables = {
+        XDG_SESSION_TYPE = "wayland";
         NIXOS_OZONE_WL = "1";
         
         TERM = "terminator";
@@ -102,7 +103,6 @@
         QT_AUTO_SCREEN_SCALE_FACTOR = 1;
         GDK_SCALE = 1;
 
-        PIPEWIRE_LATENCY = 128/48000;
         _JAVA_AWT_WM_NONEREPARENTING = 1;
     };
     systemPackages = with pkgs; [
@@ -122,6 +122,8 @@
     ];
   };
 
+xdg.portal.enable = true;
+
   # Enable touchpad support (enabled default in most desktopManager).
   services = {
     avahi = {
@@ -136,10 +138,9 @@
     udisks2.enable = true;
     blueman.enable = true;
     thermald.enable = true;
-    xserver = {
-      enable = true;
-      libinput.enable = true;
-    };
+    libinput.enable = true;
+    xserver.enable = true;
+  
   };
 
   programs = {

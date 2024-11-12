@@ -5,9 +5,14 @@
   ...
 }:
 let
-  hyprlandConf = pkgs.writeText "greetd-hyprland-config" '' exec-once = "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l; hyprctl dispatch exit"  '';
-
-  River = '' exec "/home/topsykrets/.config/river/startup.sh" '';
+  greetConf = pkgs.writeText "greetd-sway-config" '' 
+	exec "${pkgs.greetd.gtkgreet}/bin/gtkgreet -l; swaymsg exit"
+	bindsym Mod4+shift+e exec swaynag\
+	-t warning \
+	-m "What do you want to do?" \
+	-b 'Power Off' 'systemctl poweroff' \
+	-b 'Reboot' 'systemctl reboot'
+  '';
 in
  {
   
@@ -15,14 +20,14 @@ in
   services = {
     greetd = {
       enable = true;
-      settings = {
-      #  initial_session = {
-      #		command = "Hyprland";
-      #		user = "topsykrets";
-      #	};
-	      default_session = {
-		      command = "Hyprland -c ${hyprlandConf}";
-        };
+      settings = rec {
+       # initial_session = {
+      	#	command = "river";
+      	#	user = "topsykrets";
+#     	};
+	default_session = {
+		command = "${pkgs.sway}/bin/sway -c ${greetConf}";
+	};
       };
     };
     # logind
@@ -46,10 +51,9 @@ in
   
 
   environment.etc."greetd/environments".text = ''
-    deepin
-    bash
-    Hyprland
-    River
+	Hyprland
+	river
+	bash
   '';
 
   systemd = {
