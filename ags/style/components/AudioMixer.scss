@@ -1,0 +1,92 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2024 TopsyKrets
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge, publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
+//------------- VOLUME SLIDER ---------------------
+.audio-mixer {
+	color: $color1;
+
+	.header {
+		border-radius: $radius;
+		border-bottom: $border;
+		box-shadow: 0 0.5rem 0.5rem -0.25rem rgba(15, 155, 255, 0.8);
+		margin-bottom: 0.5rem;
+		padding: 0 1rem;
+	}
+
+	&.settings-button {
+		color: $color1;
+
+		&:hover {
+			color: $color5;
+		}
+	}
+
+	&.container {
+		background: $PrimaryBG;
+		border-radius: calc($radius * 1.25);
+		border: $border;
+		padding: 1rem;
+	}
+}
+
+.muted {
+	color: red;
+
+	.icon {
+		color: red;
+	}
+}
+
+.volume-indicator:hover {
+	color: $color5;
+}
+
+.volumemixer .menu {
+	all: unset;
+
+	&.app-mixer,
+	&.sink-selector {
+		.title {
+			background: $PrimaryBG;
+			box-shadow: inset 0.25rem 0.25rem 1rem rgba(0, 0, 0, 1);
+			font-size: 1.25rem;
+			font-weight: bold;
+			margin-top: 0.25rem;
+			border-radius: 3rem;
+			padding: 0.25rem 0.75rem;
+			color: rgba(15, 155, 255, 1);
+		}
+
+		.icon {
+			margin-right: 0.5rem;
+			margin-top: 0.25rem;
+			color: rgba(15, 155, 255, 1);
+		}
+	}
+}
+
+.mixeritem,
+.sinkitem {
+	color: $color1;
+	margin-right: 0.65rem;
+
+	&.icon,
+	&.label {
+		color: $color1;
+		margin-top: 0.25rem;
+		margin-right: 0.25rem;
+	}
+
+	&:last-child {
+		margin-bottom: 0.5rem;
+	}
+}
